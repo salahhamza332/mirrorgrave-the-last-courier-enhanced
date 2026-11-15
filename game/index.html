@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mirrorgrave: The Last Courier</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23130e1f'/><circle cx='16' cy='16' r='8' fill='none' stroke='%23b8a7e8' stroke-width='2'/><circle cx='16' cy='16' r='3' fill='%237de8d8'/></svg>">
+<link rel="stylesheet" href="./src/styles.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="game-canvas" width="1280" height="720"></canvas>
+
+  <!-- In-game HUD -->
+  <div id="hud" class="hidden">
+    <div id="hud-relics" class="hud-panel">
+      <div class="hud-label">RELICS</div>
+      <div id="relic-slots">
+        <span class="relic-slot" data-i="0"></span>
+        <span class="relic-slot" data-i="1"></span>
+        <span class="relic-slot" data-i="2"></span>
+      </div>
+    </div>
+    <div id="hud-dawn" class="hud-panel">
+      <div class="hud-label">DAWN</div>
+      <div id="dawn-time">6:00</div>
+      <div id="dawn-bar"><div id="dawn-fill"></div></div>
+    </div>
+    <div id="hud-score" class="hud-panel">
+      <div class="hud-label">SCORE</div>
+      <div id="score-value">0</div>
+      <div id="best-value" class="hud-sub">BEST 0</div>
+    </div>
+    <div id="hud-status" class="hud-panel">
+      <span id="lantern-state" class="status-chip">LANTERN DARK</span>
+      <div id="lantern-energy" title="Lantern oil — rekindles in darkness"><div id="lantern-energy-fill"></div></div>
+      <span id="hide-state" class="status-chip">IN THE OPEN</span>
+      <span id="secret-count" class="status-chip secret-chip">SECRETS 0/6</span>
+    </div>
+    <div id="zone-label" class="zone-fade">THE MIRROR PLAZA</div>
+    <div id="detection-eye" class="hidden">
+      <svg viewBox="0 0 64 32" width="96" height="48" aria-hidden="true">
+        <path id="eye-outline" d="M2 16 Q32 -6 62 16 Q32 38 2 16 Z" fill="rgba(10,8,18,0.72)" stroke="#b8a7e8" stroke-width="2"/>
+        <circle id="eye-iris" cx="32" cy="16" r="8" fill="#3a2f55" stroke="#7de8d8" stroke-width="1.6"/>
+        <circle id="eye-pupil" cx="32" cy="16" r="3.2" fill="#0d0a12"/>
+      </svg>
+      <div id="detection-fill"><div id="detection-fill-bar"></div></div>
+    </div>
+    <div id="toast" class="hidden"></div>
+    <div id="bell-hint" class="hidden">E — RING THE GRAVE BELL</div>
+    <div id="relic-hint" class="hidden">E — TAKE THE RELIC</div>
+    <div id="barge-hint" class="hidden">E — BOARD THE EXTRACTION BARGE</div>
+  </div>
+
+  <!-- Title screen -->
+  <div id="screen-title" class="screen">
+    <div class="title-inner">
+      <div class="title-kicker">A FLOATING CEMETERY · BEFORE DAWN</div>
+      <h1 class="title-logo">MIRRORGRAVE</h1>
+      <div class="title-sub">THE LAST COURIER</div>
+      <p class="title-story">Three relics were stolen from the graves of kings and scattered through the Mirrorgrave.
+        You are the last courier who walks between the worlds. The Chalice waits in the open, the Mirror Sigil shows itself
+        only to lantern light, and the Pale Lantern is bound by a ward that two grave bells must break. Slip past the Watch,
+        spend your lantern oil wisely, and board the extraction barge before the dawn breaks the mist — and with it, you.</p>
+      <div class="title-controls">
+        <span><b>WASD / ←↑↓→</b> move</span><span><b>Shift</b> sprint</span><span><b>Space</b> hide</span>
+        <span><b>E</b> lantern / use</span><span><b>R</b> restart</span><span><b>Esc</b> pause</span>
+      </div>
+      <button id="btn-start" class="brass-btn">BEGIN THE DELIVERY</button>
+      <div id="title-best" class="title-best"></div>
+      <div class="title-foot">Best played with sound on · offline · keyboard &amp; mouse</div>
+    </div>
+  </div>
+
+  <!-- Pause screen -->
+  <div id="screen-pause" class="screen hidden">
+    <div class="panel-inner">
+      <h2>PAUSED</h2>
+      <p class="panel-text">The mist holds its breath.</p>
+      <div class="title-controls">
+        <span><b>WASD</b> move</span><span><b>Shift</b> sprint</span><span><b>Space</b> hide</span>
+        <span><b>E</b> lantern / use</span><span><b>R</b> restart</span><span><b>Esc</b> resume</span>
+      </div>
+      <button id="btn-resume" class="brass-btn">RESUME</button>
+      <button id="btn-restart-pause" class="ghost-btn">RESTART RUN</button>
+    </div>
+  </div>
+
+  <!-- End screens -->
+  <div id="screen-end" class="screen hidden">
+    <div class="panel-inner">
+      <div id="end-kicker" class="title-kicker">DAWN</div>
+      <h2 id="end-title">THE COURIER PREVAILS</h2>
+      <p id="end-story" class="panel-text"></p>
+      <div id="end-stats" class="end-stats"></div>
+      <div id="end-best" class="title-best"></div>
+      <button id="btn-again" class="brass-btn">RUN IT AGAIN <span class="btn-key">(R)</span></button>
+    </div>
+  </div>
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
