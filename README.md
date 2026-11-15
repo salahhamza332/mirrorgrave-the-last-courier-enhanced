@@ -45,6 +45,13 @@ island; each is worth score. The HUD tracks them.
 
 **Controls.** `WASD`/arrows move · `Shift` sprint · `Space` hide · `E` lantern / use · `R` restart · `Esc` pause.
 
+## Development
+
+`qa-enhanced.mjs`, `verify-phase3.mjs`, `verify-persistence.mjs` and `shots.mjs` are CDP (Chrome
+DevTools Protocol) verification harnesses used to test the game in headless Chromium and capture the
+screenshots; `serve.ts` is the local static server for `http://localhost:8080`. None of them are needed
+to play.
+
 ## Screenshots
 
 `screenshots/1-title.png` (title) · `screenshots/2-play.png` (in-game, HUD, lantern lit) · `screenshots/3-victory.png` (results)
@@ -52,7 +59,7 @@ island; each is worth score. The HUD tracks them.
 ## Layout
 
 `game/index.html` — page shell + HUD + screens · `game/src/world.js` — the island, zones, relic
-puzzles, bridge, secrets, collision · `game/src/guards.js` — warden AI (patrol/hear/search/shout) ·
+puzzles, secrets, collision · `game/src/guards.js` — warden AI (patrol/hear/search/shout) ·
 `game/src/main.js` — loop, state, lantern energy, scoring · `game/src/render.js` — isometric renderer
 (vector art, lighting, fog, puddles) · `game/src/audio.js` — generated WebAudio sound ·
 `game/src/styles.css` — UI · `vendor/makefun-game.ts` — the bounty kit's library, unmodified.

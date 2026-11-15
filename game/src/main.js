@@ -57,7 +57,8 @@ function showScreen(which) {
   screens.title.classList.toggle('hidden', which !== 'title');
   screens.pause.classList.toggle('hidden', which !== 'pause');
   screens.end.classList.toggle('hidden', which !== 'end');
-  hud.classList.toggle('hidden', which === 'title');
+  // HUD belongs to gameplay only: hide it behind every screen (title, pause, end)
+  hud.classList.toggle('hidden', which !== null && which !== undefined);
 }
 
 function toast(msg, seconds = 2.6) {

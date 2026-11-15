@@ -40,8 +40,6 @@ const EPITAPHS = [
   { x: 33.0, y: 15.0, text: 'THE WATCH DOES NOT SLEEP. THE WATCH ONLY WAITS.' },
   { x: 12.5, y: 33.0, text: 'COUNT TWO BELLS, AND THE PALE WARD WILL LOOSEN.' },
 ];
-// The spectral bridge across the Sunken Court — phases in and out on a slow cycle
-export const BRIDGE = { x: 30.4, y: 19.4, w: 3.4, h: 1.5, period: 7.0 };
 const BELL_SPOTS = [
   { x: 22.5, y: 14.5 },
   { x: 13.5, y: 25.5 },
@@ -164,7 +162,6 @@ export function buildWorld() {
     relics: RELIC_SPOTS.map((r, i) => ({ ...r, id: i, taken: false, revealed: false })),
     echoes: ECHO_SPOTS.map((e, i) => ({ ...e, id: i, taken: false })),
     epitaphs: EPITAPHS.map((e, i) => ({ ...e, id: i, read: false })),
-    bridge: { ...BRIDGE },
     bells: BELL_SPOTS.map((b, i) => ({ ...b, id: i, cooldown: 0, ringT: -10 })),
     guards: GUARD_PATROLS.map((wp, i) => ({
       id: i, waypoints: wp.map(p => ({ ...p })),
@@ -217,19 +214,6 @@ export function resolveCollision(world, x, y, radius) {
         x += ddx * push; y += ddy * push;
       }
     }
-    // spectral bridge — solid only while phased in
-    if (bridgeSolid(world)) {
-      const o = world.bridge;
-      const nx = Math.max(o.x, Math.min(x, o.x + o.w));
-      const ny = Math.max(o.y, Math.min(y, o.y + o.h));
-      const ddx = x - nx, ddy = y - ny;
-      const d2 = ddx * ddx + ddy * ddy;
-      if (d2 < radius * radius) {
-        const d = Math.sqrt(d2) || 0.001;
-        const push = (radius - d) / d;
-        x += ddx * push; y += ddy * push;
-      }
-    }
     // graves as small cylinders
     for (const g of world.graves) {
       const ddx = x - g.x, ddy = y - g.y;
@@ -262,15 +246,6 @@ export function resolveCollision(world, x, y, radius) {
   return { x, y };
 }
 
-// Spectral bridge state: solid (walkable, phased-in) for half its period
-export function bridgeSolid(world, timeSec) {
-  const t = (timeSec ?? world.timeSec ?? 0) % world.bridge.period;
-  return t < world.bridge.period * 0.52;
-}
-export function bridgePhase(world, timeSec) {
-  const t = (timeSec ?? world.timeSec ?? 0) % world.bridge.period;
-  return t / world.bridge.period;
-}
 
 // Named districts — environmental storytelling + HUD zone label
 export function zoneAt(x, y) {

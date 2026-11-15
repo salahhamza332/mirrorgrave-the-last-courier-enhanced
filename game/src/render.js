@@ -1,5 +1,5 @@
 // Mirrorgrave — isometric renderer. Original vector art, violet/teal/brass palette.
-import { SIZE, TILE, inFog, bridgePhase } from './world.js';
+import { SIZE, TILE, inFog } from './world.js';
 
 export const TILE_W = 64, TILE_H = 32;
 const isoX = (x, y) => (x - y) * (TILE_W / 2);
@@ -51,8 +51,6 @@ export function render(ctx, world, state, time) {
   // Puddles (under entities)
   for (const p of world.puddles) drawPuddle(ctx, p, time);
 
-  // Spectral bridge over the Sunken Court — phases in and out
-  drawBridge(ctx, world, time);
   // Epitaphs (always faintly visible) and lantern-revealed echoes
   for (const ep of world.epitaphs) drawEpitaph(ctx, ep, time);
   if (state.lanternOn) for (const ec of world.echoes) if (!ec.taken) drawEcho(ctx, ec, time);
@@ -477,46 +475,6 @@ function drawRelic(ctx, r, state, time) {
     ctx.stroke();
     ctx.restore();
   }
-}
-
-function drawBridge(ctx, world, time) {
-  const b = world.bridge;
-  const solid = bridgePhase(world) < 0.52;
-  const fade = solid ? 1 : Math.max(0, 1 - (bridgePhase(world) - 0.52) * 4.5);
-  if (fade <= 0.02 && bridgePhase(world) > 0.74) {
-    // Fully phased out — draw only rune anchors
-  }
-  // Rune anchor posts at both ends
-  for (const [ax, ay] of [[b.x - 0.4, b.y + b.h / 2], [b.x + b.w + 0.4, b.y + b.h / 2]]) {
-    const s = worldToScreen(ax, ay);
-    ctx.fillStyle = '#3d3550';
-    ctx.fillRect(s.x - 3, s.y - 22, 6, 22);
-    ctx.fillStyle = '#7de8d8';
-    ctx.globalAlpha = 0.5 + 0.5 * Math.sin(time * 2.2 + ax);
-    ctx.beginPath(); ctx.arc(s.x, s.y - 24, 2.4, 0, Math.PI * 2); ctx.fill();
-    ctx.globalAlpha = 1;
-  }
-  if (fade <= 0.02) return;
-  // Planks — translucent spectral timber
-  const s0 = worldToScreen(b.x, b.y), s1 = worldToScreen(b.x + b.w, b.y), s2 = worldToScreen(b.x + b.w, b.y + b.h), s3 = worldToScreen(b.x, b.y + b.h);
-  ctx.save();
-  ctx.globalAlpha = 0.35 + 0.45 * fade;
-  ctx.beginPath();
-  ctx.moveTo(s0.x, s0.y); ctx.lineTo(s1.x, s1.y); ctx.lineTo(s2.x, s2.y); ctx.lineTo(s3.x, s3.y);
-  ctx.closePath();
-  const g = ctx.createLinearGradient(s0.x, s0.y, s2.x, s2.y);
-  g.addColorStop(0, '#2e4a4a'); g.addColorStop(0.5, '#3f6b66'); g.addColorStop(1, '#2e4a4a');
-  ctx.fillStyle = g; ctx.fill();
-  ctx.strokeStyle = 'rgba(125,232,216,0.75)'; ctx.lineWidth = 1.6; ctx.stroke();
-  // Plank seams
-  ctx.globalAlpha = 0.5 * fade;
-  for (let i = 1; i < 5; i++) {
-    const t = i / 5;
-    const ax = s0.x + (s1.x - s0.x) * t, ay = s0.y + (s1.y - s0.y) * t;
-    const bx = s3.x + (s2.x - s3.x) * t, by = s3.y + (s2.y - s3.y) * t;
-    ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
-  }
-  ctx.restore();
 }
 
 function drawEcho(ctx, ec, time) {
